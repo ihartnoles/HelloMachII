@@ -1,0 +1,92 @@
+<mach-ii version="1.0">
+
+	<!-- PROPERTIES -->
+	<properties>
+		<property name="applicationRoot" value="/HelloMachII" />
+		<property name="defaultEvent" value="sayHello" />
+		<property name="eventParameter" value="event" />
+		<property name="parameterPrecedence" value="form" />
+		<property name="maxEvents" value="10" />
+		<property name="exceptionEvent" value="exceptionEvent" />
+		<property name="coldspringProperty" type="coldspring.machii.ColdspringProperty">
+			<parameters>
+				<parameter name="beanFactoryPropertyName" 		 value="serviceFactory"/>
+				<parameter name="configFile" 			  		 value="/webroot/config/coldspring/services.xml.cfm" />
+				<parameter name="resolveMachIIDependencies"      value="true"/>
+				<parameter name="placeFactoryInApplicationScope" value="true" /> 
+				<!-- Whether path is relative (mapped) or absolute - Default: FALSE 
+				<parameter name="configFilePathIsRelative" value="true"/>-->
+				<parameter name="resolveMachIIDependencies" 	 value="true"/>
+				<parameter name="placeFactoryInApplicationScope" value="true" /> 
+			</parameters>
+		</property>
+		<property name="dsn" value="TestDSN" />
+	</properties>
+
+	<!-- PLUGINS -->
+	<plugins>
+		<!--
+		<plugin name="yourPluginName" type="fullyQualifiedDotDelimitedPathToCFC">
+			<parameters>
+				<parameter name="yourParameterName" value="yourParameterValue" />
+			</parameters>
+		</plugin>
+		-->
+	</plugins>
+
+	<!-- EVENT-FILTERS -->
+	<event-filters>
+	</event-filters>
+
+	<!-- LISTENERS -->
+	<listeners>
+		<listener name="loginListener" type="HelloMachII.listeners.LoginListener" />
+	</listeners>
+	
+	<!-- EVENT-HANDLERS -->
+	<event-handlers>
+
+		<event-handler event="hitDB" access="public">
+			<notify listener="loginListener" method="hitDB" resultArg="qStudents"  />
+			<view-page name="listStudents" />
+		</event-handler>
+
+		<event-handler event="sayHello" access="public">
+			<view-page name="hello" />
+		</event-handler>
+		
+		<event-handler event="showInputForm" access="public">
+			<view-page name="inputForm" />
+		</event-handler>
+		
+		<event-handler event="showLoginForm" access="public">
+			<view-page name="loginForm" />
+		</event-handler>
+		
+		<event-handler event="processLoginAttempt" access="public">
+			<notify listener="loginListener" method="validateLogin" />
+		</event-handler>
+		
+		<event-handler event="loginSucceeded" access="private">
+			<view-page name="mainMenu" />
+		</event-handler>
+		
+		<event-handler event="loginFailed" access="private">
+			<announce event="showLoginForm" copyEventArgs="true" />
+		</event-handler>
+		
+		<event-handler event="exceptionEvent" access="private">
+			<view-page name="exception" />
+		</event-handler>
+	</event-handlers>
+	
+	<!-- PAGE-VIEWS -->
+	<page-views>
+		<page-view name="hello" page="/views/hello.cfm" />
+		<page-view name="listStudents" page="/views/listStudents.cfm" />
+		<page-view name="inputForm" page="/views/inputForm.cfm" />
+		<page-view name="loginForm" page="/views/loginForm.cfm" />
+		<page-view name="mainMenu" page="/views/mainMenu.cfm" />
+		<page-view name="exception" page="/views/exception.cfm" />
+	</page-views>
+</mach-ii>
